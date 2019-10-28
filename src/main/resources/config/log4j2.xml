@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval = "30">
+    <!--多出配置需要用到的属性，这个和maven 一样,在""双引号中直接用 ${properties_name} 即可-->
+    <Properties>
+        <Property name="appname">myapp</Property>
+        <Property name="log_path">
+            d:\logs
+        </Property>
+        <Property name="file_name">
+            log.html
+        </Property>
+    </Properties>
+    <!--Appender输出日志的目的地-->
+    <Appenders>
+        <!--输出到控制台-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <!--输出到目标文件夹-->
+        <File name="File" fileName="${log_path}/${file_name}">
+            <PatternLayout pattern="%msg%n"/>
+        </File>
+
+        <RollingRandomAccessFile
+                name="RollingRandomAccessFile"
+                fileName="${log_path}\logSize.txt"
+                filePattern="${log_path}\logs/app-%d{yyyy-MM-dd}-%i.log.zip">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1 KB"/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <!--每个logger 负责记录不同的的信息-->
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="info_all" level="info" additivity="true">
+            <AppenderRef ref="RollingRandomAccessFile"/>
+        </Logger>
+    </Loggers>
+</Configuration>
